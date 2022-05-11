@@ -1,9 +1,11 @@
 data "tfe_oauth_client" "ado" {
   oauth_client_id = var.ado_oauth_client_id
+  count = var.ado_oauth_client_id != "" ? 1 : 0
 }
 
 data "tfe_oauth_client" "github" {
   oauth_client_id = var.github_oauth_client_id
+  count = var.github_oauth_client_id != "" ? 1 : 0
 }
 
 module "ado_repo" {
@@ -32,7 +34,7 @@ locals {
   # If GitHub get the GitHub OAuth token id
   # Else If ADO get the ADO OAuth token id
   # Else ""
-  vcs_token_id = var.use_github ? data.tfe_oauth_client.github.oauth_token_id : var.use_ado ? data.tfe_oauth_client.ado.oauth_token_id : ""
+  vcs_token_id = var.use_github ? data.tfe_oauth_client.github.0.oauth_token_id : var.use_ado ? data.tfe_oauth_client.ado.0.oauth_token_id : ""
 }
 
 
@@ -57,6 +59,43 @@ resource "tfe_variable" "team_owner" {
   description  = "Name of the team workspace that created this workspace"
   sensitive    = false
 }
+
+resource "tfe_variable" "org_name" {
+  key          = "org_name"
+  value        = var.org_name
+  category     = "terraform"
+  workspace_id = tfe_workspace.team.0.id
+  description  = "TFC Organization Name"
+  sensitive    = false
+}
+
+resource "tfe_variable" "github_org_name" {
+  key          = "github_org_name"
+  value        = var.github_org_name
+  category     = "terraform"
+  workspace_id = tfe_workspace.team.0.id
+  description  = "GitHub Organization Name"
+  sensitive    = false
+}
+
+resource "tfe_variable" "github_oauth_client_id" {
+  key          = "github_oauth_client_id"
+  value        = var.github_oauth_client_id
+  category     = "terraform"
+  workspace_id = tfe_workspace.team.0.id
+  description  = "GitHub OAuth Client ID"
+  sensitive    = false
+}
+
+resource "tfe_variable" "ado_oauth_client_id" {
+  key          = "ado_oauth_client_id"
+  value        = var.ado_oauth_client_id
+  category     = "terraform"
+  workspace_id = tfe_workspace.team.0.id
+  description  = "ADO OAuth Client ID"
+  sensitive    = false
+}
+
 
 resource "tfe_team" "team" {
   name         = "${var.team_name}"
