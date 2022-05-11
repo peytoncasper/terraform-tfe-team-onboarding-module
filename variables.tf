@@ -19,6 +19,10 @@ variable "ado_org_name" {
     type = string
     default = ""
 }
+variable "ado_oauth_client_id" {
+    type = string
+    default = ""
+}
 
 ///
 /// Github Input Variables
@@ -30,6 +34,10 @@ variable "use_github" {
     default = false
 }
 variable "github_org_name" {
+    type = string
+    default = ""
+}
+variable "github_oauth_client_id" {
     type = string
     default = ""
 }

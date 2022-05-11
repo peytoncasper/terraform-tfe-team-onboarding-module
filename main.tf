@@ -1,9 +1,9 @@
 data "tfe_oauth_client" "ado" {
-  oauth_client_id = "oc-STqC7WV58WqViMvB"
+  oauth_client_id = var.ado_oauth_client_id
 }
 
 data "tfe_oauth_client" "github" {
-  oauth_client_id = "oc-6dX3RSYf58r1VB9X"
+  oauth_client_id = var.github_oauth_client_id
 }
 
 module "ado_repo" {
